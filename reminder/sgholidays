@@ -1,0 +1,15 @@
+#!/bin/bash
+cp $HOME/agenda $HOME/.agenda.bak
+YEAR=$(date +%Y)
+wget https://www.mom.gov.sg/-/media/mom/documents/employment-practices/public-holidays/public-holidays-sg-$YEAR.ics -P ~/.Scripts
+awk -F: /DTSTART/'{print $2}' ~/.Scripts/public-holidays-sg-2023.ics > $HOME/A
+date --file=A +%Y/%m/%d > $HOME/Anew
+awk -F: /SUMMARY/'{print $2}' ~/.Scripts/public-holidays-sg-2023.ics > $HOME/B
+pr -m -t Anew B > $HOME/C
+sed -i 's/^/REM\t/' $HOME/C
+cat $HOME/C >> $HOME/agenda
+echo "Cleaning Up"
+sort -u $HOME/agenda > $HOME/agenda_temp
+rm $HOME/agenda
+mv $HOME/agenda_temp $HOME/agenda
+rm $HOME/A $HOME/B $HOME/C $HOME/.Scripts/public-holidays-sg-2023.ics 

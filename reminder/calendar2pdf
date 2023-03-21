@@ -1,0 +1,4 @@
+#!/bin/bash
+remind -p12 agenda 2023/01/01 | rem2ps > calendar.ps
+ps2pdf calendar.ps
+rm calendar.ps

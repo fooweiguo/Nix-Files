@@ -9,7 +9,5 @@ pr -m -t Anew B > $HOME/C
 sed -i 's/^/REM\t/' $HOME/C
 cat $HOME/C >> $HOME/agenda
 echo "Cleaning Up"
-sort -u $HOME/agenda > $HOME/agenda_temp
-rm $HOME/agenda
-mv $HOME/agenda_temp $HOME/agenda
+sort -u $HOME/agenda -o $HOME/agenda
 rm $HOME/A $HOME/B $HOME/C $HOME/.Scripts/public-holidays-sg-2023.ics 

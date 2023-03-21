@@ -1,0 +1,4 @@
+#!/bin/bash
+read -p "What is the name of the text do you want to convert to pdf?: " TEXT
+vim $TEXT -c "hardcopy > $TEXT.ps | q"; ps2pdf $TEXT.ps
+rm $TEXT.ps 

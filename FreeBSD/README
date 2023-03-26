@@ -1,1 +1,3 @@
-README
+Some of the scripts for FreeBSD.
+Due to some differences between the bin packages in Linux and in FreeBSD, a separate folder has to be created.
+Because Mac OS and FreeBSD are derived from the same BSD family, these scripts can also be used for Mac OS. 

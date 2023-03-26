@@ -1,0 +1,14 @@
+
+#!/bin/bash
+
+read -p "Input Date: " DATE
+read -p "Input Time: " TIME
+read -p "Input Message: " MSG
+
+if date -j -f "%Y/%m/%d" +%Y/%m/%d $DATE > /dev/null 2>&1 && date -j -f "%H:%M" +%H:%M $TIME > /dev/null 2>&1 && [ -n "$TIME" ] && [ -n "$MSG" ]
+	then echo "REM $DATE AT $TIME  MSG $MSG" >> ~/.reminder
+elif  [ -z "$TIME" ] && [ -n "$MSG" ] && date -j -f "%Y/%m/%d" +%Y/%m/%d $DATE > /dev/null 2>&1
+	then echo "REM $DATE MSG $MSG" >> ~/.reminder
+else
+	echo "This is not the date format, or not time format, or message is empty!"
+fi

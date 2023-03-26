@@ -1,0 +1,23 @@
+#!/bin/bash
+
+touch ~/.remindtest 
+read -p "Input key words: " KEYWORDS
+cp -fr ~/.reminder ~/.reminder.bak
+
+grep -q -i "$KEYWORDS" ~/.reminder
+
+if [[ $? -ne 0 ]] 
+then
+	echo "No match!"
+else
+	cat -n ~/.reminder | grep -i "$KEYWORDS"
+	read -p "Which entry do you want to remove (enter the corresponding number): " LINENUMBER
+	sed "${LINENUMBER}d" ~/.reminder > ~/.remindtest | remind -c+2 ~/.remindtest
+	read -p "Does this look okay to you? (WARNING: This action will not be recoverable!)" yn
+		case $yn in 
+			[Yy]* ) sed -i '' "${LINENUMBER}d" ~/.reminder; break;;
+			[Nn]* ) exit;;
+			* ) echo "Please answer Yes or No." ;;
+		esac
+fi
+rm ~/.remindtest

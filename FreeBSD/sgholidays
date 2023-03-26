@@ -1,0 +1,16 @@
+#!/bin/bash
+cp $HOME/.reminder $HOME/.reminder.bak
+YEAR=$(date +%Y)
+wget https://www.mom.gov.sg/-/media/mom/documents/employment-practices/public-holidays/public-holidays-sg-$YEAR.ics -P $HOME/tmp
+awk -F: /DTSTART/'{print $2}' ~/tmp/public-holidays-sg-2023.ics > $HOME/tmp/A
+sh $HOME/.scripts/datefile
+awk -F: /SUMMARY/'{print $2}' ~/tmp/public-holidays-sg-2023.ics > $HOME/tmp/B
+pr -m -t $HOME/tmp/Anew $HOME/tmp/B > $HOME/tmp/C
+sed -i '' 's/^/REM\t/' $HOME/tmp/C
+cat $HOME/tmp/C >> $HOME/.reminder
+pr -m -t $HOME/tmp/Anew2 $HOME/tmp/B > $HOME/tmp/Cnew
+echo "Cleaning Up. Here are holidays for the year $YEAR:"
+sort -u $HOME/.reminder -o $HOME/.reminder
+rm $HOME/tmp/A $HOME/tmp/B $HOME/tmp/C $HOME/tmp/Anew $HOME/tmp/public-holidays-sg-2023.ics 
+cat $HOME/tmp/Cnew | sort
+rm $HOME/tmp/Anew2 $HOME/tmp/Cnew

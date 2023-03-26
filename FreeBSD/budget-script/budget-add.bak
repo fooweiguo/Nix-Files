@@ -1,0 +1,29 @@
+
+#!/bin/bash
+
+# SOME HOUSEKEEPING
+ledger -f ~/Singapore/UOB.dat accounts > ~/.scripts/budget-script/categories
+awk -F: '{print $2}' ~/.scripts/budget-script/categories > account
+
+REPEAT="y"
+read -p "Input Date YYYY/MM/DD: " DATE
+
+while [ $REPEAT="y" ]
+do
+read -p "Input Payee: " PAYEE
+read -p "Input Expense Type: " EXPENSE
+read -p "Input Amount: " AMOUNT 
+
+if date -j -f "%Y/%m/%d" +%Y/%m/%d $DATE > /dev/null 2>&1 && [ -n "$DATE" ] && [ -n "$EXPENSE" ] && [ -n $AMOUNT ]
+	then printf "$DATE \t $PAYEE \n \t Expenses:$EXPENSE \t SGD $AMOUNT \n \t Assets:UOB \n\n" >> ~/Singapore/UOB.dat
+	cat ~/Singapore/UOB.dat
+	read -p "Repeat? (y/n) " INPUT
+		case $INPUT in
+			[Yy]): REPEAT="y";;
+			[Nn]): break; exit;;
+	esac
+else	
+	echo "This is not the date format, or missing expenses, or missing amount, or missing payee!"
+fi
+done
+

@@ -1,11 +1,14 @@
-#!/bin/bash
-read -p "How much SGD do you want to convert?: " SGD
-echo "To Euros: $(qalc $SGD sgd to eur)."
-echo "To Chinese Yuan: $(qalc $SGD sgd to cny)."
-echo "To USD: $(qalc $SGD sgd to usd)."
-echo "To British pounds: $(qalc $SGD sgd to gbp)."
-echo "To Swiss Francs: $(qalc $SGD to chf)."
-echo "To Malaysian Ringgit: $(qalc $SGD sgd to myr)."
-echo "To Indonesian Ruppiah: $(qalc $SGD sgd to idr)."
-echo "To Thai Bhat: $(qalc $SGD sgd to thb)."
-
+ #!/bin/bash
+   CPATH=~/Documents/Information/currencyrates
+   rm $CPATH
+   touch $CPATH
+   read -p "How much SGD do you want to convert?: " SGD
+   echo "To Euros: $(qalc $SGD sgd to eur)." >> $CPATH
+   echo "To Chinese Yuan: $(qalc $SGD sgd to cny)." >> $CPATH
+   echo "To USD: $(qalc $SGD sgd to usd)." >> $CPATH
+   echo "To British pounds: $(qalc $SGD sgd to gbp)." >> $CPATH
+   echo "To Swiss Francs: $(qalc $SGD to chf)." >> $CPATH
+   echo "To Malaysian Ringgit: $(qalc $SGD sgd to myr)." >> $CPATH
+   echo "To Indonesian Ruppiah: $(qalc $SGD sgd to idr)." >> $CPATH
+   echo "To Thai Bhat: $(qalc $SGD sgd to thb)." >> $CPATH
+   cat $CPATH

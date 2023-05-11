@@ -1,40 +1,40 @@
- #!/bin/bash
-   
-  # SOME HOUSEKEEPING
-   ledger -f ~/Documents/Budget/2023/UOB.dat accounts > ~/opt/personal/budget/categories
-   grep Expenses ~/opt/personal/budget/categories | awk -F: '{print $2}' >> ~/opt/personal/budget/accounts
-   sort -u $HOME/opt/personal/budget/accounts -o $HOME/opt/personal/budget/accounts
-   
-   REPEAT="y"
-   
-  read -p "Input Date YYYY/MM/DD: " DATE
-  while [ $REPEAT='y' ]
-  do
-  read -p "Input Payee: " PAYEE
-  read -p "Input Expense Type: " EXPENSE
-  read -p "Input Amount: " AMOUNT
-  
-  if grep -Fxq $EXPENSE $HOME/opt/personal/budget/accounts
-          then
-                  if date -j -f '%Y/%m/%d' +%Y/%m/%d $DATE > /dev/null 2>&1 && [ -n '$DATE' ] && [ -n '$EXPENSE' ] && [ -n '$AMOUNT' ]
-                          then printf "$DATE \t $PAYEE \n \t\t Expenses:$EXPENSE \t SGD $AMOUNT \n \t\t Assets:UOB \n\n" >> ~/Documents/Budget/2023/UOB.dat
-                          cat ~/Documents/Budget/2023/UOB.dat
-                          read -p 'Repeat? (y/n/c (change date)) ' INPUT
-                                  case $INPUT in
-                                          [Yy]): REPEAT='y';;
-                                          [Nn]): break 2; exit;;
-                                          [Cc]): break 2; read -p 'Input Date YYYY/MM/DD: ' DATE;;
-                          esac
-                  else
-                          echo 'This is not the date format, or missing expenses, or missing amount, or missing payee!'
-                  fi
-          else
-                  echo 'Expense type is not in list. Please choose from the following list: '
-                  cat ~/opt/personal/budget/accounts
-                  read -p 'Add accounts? (y/n) ' INPUT
-                          case $INPUT in
-                                  [Yy]): break 2; printf "$EXPENSE\n" >> ~/opt/personal/budget/accounts;;
-                                  [Nn]): break 2; exit;;
-                          esac
-  fi
-  done
+#!/bin/bash
+
+# SOME HOUSEKEEPING
+ledger -f ~/Documents/Budget/2023/UOB.dat accounts > ~/opt/personal/budget/categories
+grep Expenses ~/opt/personal/budget/categories | awk -F: '{print $2}' >> ~/opt/personal/budget/accounts
+sort -u $HOME/opt/personal/budget/accounts -o $HOME/opt/personal/budget/accounts 
+
+REPEAT="y"
+
+read -p "Input Date YYYY/MM/DD: " DATE
+while [ $REPEAT='y' ]
+do
+read -p "Input Payee: " PAYEE
+read -p "Input Expense Type: " EXPENSE
+read -p "Input Amount: " AMOUNT 
+
+if grep -Fxq $EXPENSE $HOME/opt/personal/budget/accounts
+	then 
+		if date -j -f '%Y/%m/%d' +%Y/%m/%d $DATE > /dev/null 2>&1 && [ -n '$DATE' ] && [ -n '$EXPENSE' ] && [ -n '$AMOUNT' ]
+			then printf "$DATE \t $PAYEE \n \t\t Expenses:$EXPENSE \t SGD $AMOUNT \n \t\t Assets:UOB \n\n" >> ~/Documents/Budget/2023/UOB.dat
+			cat ~/Documents/Budget/2023/UOB.dat
+			read -p 'Repeat? (y/n/c (change date)) ' INPUT
+				case $INPUT in
+					[Yy]): REPEAT='y';;
+					[Nn]): break 2; exit;;
+					[Cc]): break 2; read -p 'Input Date YYYY/MM/DD: ' DATE;;
+			esac
+		else	
+			echo 'This is not the date format, or missing expenses, or missing amount, or missing payee!'
+		fi
+	else
+		echo 'Expense type is not in list. Please choose from the following list: '
+		cat ~/opt/personal/budget/accounts
+		read -p 'Add accounts? (y/n) ' INPUT
+			case $INPUT in
+				[Yy]): break 2; printf "$EXPENSE\n" >> ~/opt/personal/budget/accounts;;
+				[Nn]): break 2; exit;;
+			esac
+fi
+done

@@ -1,0 +1,8 @@
+#!/bin/bash
+read -p "Enter Place: " PLACE
+read -p "Enter Branch: " BRANCH
+read -p "Enter Street Address: " ADD
+read -p "Enter Zip: " ZIP
+read -p "Enter Telephone: " TEL
+read -p "Enter Opening Hours: " HOURS
+echo "$PLACE?$BRANCH?$ADD?$ZIP?$TEL?$HOURS" >> $HOME/Documents/Information/openinghours.csv

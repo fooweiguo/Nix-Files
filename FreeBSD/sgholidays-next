@@ -1,0 +1,20 @@
+#!/bin/bash
+DATE=$(date +%Y/%m/%d)
+NHPATH=$HOME/tmp
+touch $NHPATH/C2023N
+rm $NHPATH/C2023N
+while IFS="" read -r line || [ -n "$line" ]
+	do  
+	echo "$line" > $NHPATH/C2023p
+	HOL=$(awk -F\t '{print $1}' $NHPATH/C2023p)
+	if [[ "$HOL" < "$DATE" ]]
+		then echo "$line" >> $NHPATH/C2023N
+	fi
+done < "$NHPATH/C2023"
+cat $NHPATH/C2023N | sort > $NHPATH/C2023N1
+diff $NHPATH/C2023N1 $NHPATH/C2023 > $NHPATH/C2023Next
+sed -i '' "s/^\>//g" $NHPATH/C2023Next
+NHOL=$(sed -n "2p" $NHPATH/C2023Next)
+printf 'The next holiday is\n'
+echo "$NHOL" 
+rm $NHPATH/C2023N $NHPATH/C2023N1 $NHPATH/C2023p $NHPATH/C2023Next 

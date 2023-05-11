@@ -1,0 +1,46 @@
+#!/bin/bash
+# A script to check 
+# opening hours of various 
+# places and their branches
+
+OHPATH=$HOME/tmp
+OINPUT=$HOME/Documents/Information/openinghours.csv
+#header=$( head -n 1 $OINPPUT )
+sed 1d $OINPUT > $OHPATH/openinghoursN.csv
+awk -F '?' '{ print $1 }' $OHPATH/openinghoursN.csv | sort -u > $OHPATH/place
+OLDIFS=$IFS
+IFS=$'\n'
+PS3="Select a number: "
+select place in $( cat $OHPATH/place ) quit
+do 
+if [ $place == "$place" ] && [ $place != "quit" ]
+	then MID1="$place" ; break ;
+else 
+	exit 0;
+fi 
+done
+sed -n "/^${MID1}?/p" $OHPATH/openinghoursN.csv > $OHPATH/openinghoursN1.csv
+awk -F '?' '{ print $2 }' $OHPATH/openinghoursN1.csv | sort -u > $OHPATH/branch
+select branch in $( cat $OHPATH/branch ) quit
+do
+  if [ $branch == "$branch" ] && [ $branch != "quit" ]
+          then MID2="$branch" ; break ;
+  else
+          exit 0;
+  fi
+  done
+echo "You have selected $MID1, $MID2."
+sed -n "/^${MID1}?${MID2}?/p" $OHPATH/openinghoursN1.csv > $OHPATH/openinghoursN2.csv
+touch $OHPATH/openinghours_result
+rm $OHPATH/openinghours_result
+INPUT=$OHPATH/openinghoursN2.csv 
+IFS="?"
+while read line
+	do string=$line
+		for i in $string
+			do echo "$i" >> $OHPATH/openinghours_result
+		done
+done < $INPUT
+IFS="$OLDIFS"
+sed -i '' '1s/^/\n/g' $OHPATH/openinghours_result
+cat $OHPATH/openinghours_result

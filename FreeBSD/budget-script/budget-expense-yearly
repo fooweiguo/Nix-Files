@@ -1,0 +1,52 @@
+#!/bin/bash
+EXPATH=$HOME/tmp/test
+YEAR=2023
+
+ledger -f ~/Documents/Budget/2023/UOB.dat accounts > $EXPATH/accounts
+awk -F':' '/Expenses/{print $2}' $EXPATH/accounts > $EXPATH/accounts-expenses
+
+
+DATEARRAY=("-b $YEAR/01/01 -e $YEAR/01/31" "-b $YEAR/02/01 -e $YEAR/02/28" "-b $YEAR/03/01 -e $YEAR/03/31" "-b $YEAR/04/01 -e $YEAR/04/30" "-b $YEAR/05/01 -e $YEAR/05/31" "-b $YEAR/06/01 -e $YEAR/06/30" "-b $YEAR/07/01 -e $YEAR/07/31" "-b $YEAR/08/01 -e $YEAR/08/31" "-b $YEAR/09/01 -e $YEAR/09/30" "-b $YEAR/10/01 -e $YEAR/10/31" "-b $YEAR/11/01 -e $YEAR/11/30" "-b $YEAR/12/01 -e $YEAR/12/31")
+
+MONTHARRAY=("JAN" "FEB" "MAR" "APR" "MAY" "JUN" "JUL" "AUG" "SEP" "OCT" "NOV" "DEC")
+
+## To save account expenses list as array
+ACCOUNTARR=()
+while IFS= read -r line; do
+  ACCOUNTARR+=("$line")
+done < $EXPATH/accounts-expenses
+
+touch $EXPATH/expenses-total
+touch $EXPATH/expense-analysis
+rm $EXPATH/expenses-total
+rm $EXPATH/expense-analysis
+rm $EXPATH/ExpenseAnalysis/expenses_yearly.csv
+
+for values in "${ACCOUNTARR[@]}"; do
+        touch $EXPATH/ExpenseAnalysis/$values.expense.analysis
+	echo "\n" >> $EXPATH/ExpenseAnalysis/$values.expense.analysis
+done
+
+for values in "${ACCOUNTARR[@]}"; do	
+for i in {0..11}; do	
+	ledger -f ~/Documents/Budget/2023/UOB.dat bal expenses ${DATEARRAY[i]} > $EXPATH/expenses
+	ledger -f ~/Documents/Budget/2023/UOB.dat bal expenses ${DATEARRAY[i]} >> $EXPATH/expenses-total
+	cashamt=$(grep $values $EXPATH/expenses | awk '{print $2}') 
+	#echo "${MONTHARRAY[i]}: $cashamt" >> $EXPATH/ExpenseAnalysis/$values.expense.analysis
+	sed -i '' "1s/$/$cashamt\,/" $EXPATH/ExpenseAnalysis/$values.expense.analysis
+done
+done
+
+for values in "${ACCOUNTARR[@]}"; do
+	sed -i '' "1s/^/$values\,/" $EXPATH/ExpenseAnalysis/$values.expense.analysis
+	sed -i '' '$d' $EXPATH/ExpenseAnalysis/$values.expense.analysis
+	sed -i '' 's/.$//' $EXPATH/ExpenseAnalysis/$values.expense.analysis
+done
+
+cat $EXPATH/ExpenseAnalysis/* >> $EXPATH/ExpenseAnalysis/expenses_yearly_1
+echo "Account,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec" >> $EXPATH/ExpenseAnalysis/Header.expense.analysis
+cat $EXPATH/ExpenseAnalysis/Header.expense.analysis $EXPATH/ExpenseAnalysis/expenses_yearly_1 > $EXPATH/ExpenseAnalysis/expenses_yearly.csv 
+rm $EXPATH/ExpenseAnalysis/*.expense.analysis
+rm $EXPATH/ExpenseAnalysis/expenses_yearly_1
+echo "The expenses for the year $YEAR are \n"
+csvlook $EXPATH/ExpenseAnalysis/expenses_yearly.csv

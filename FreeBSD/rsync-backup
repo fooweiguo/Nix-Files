@@ -1,0 +1,14 @@
+# /bin/bash
+echo "This will back up the folders from local machine to the external hard disk\nDocuments\nDownloads\nDesktop\nPicture\nMake sure your External HDD is plugged in!"
+
+function yes_or_no {
+    while true; do
+        read -p "$* [y/n]: " yn
+        case $yn in
+            [Yy]*) return 0  ;;  
+            [Nn]*) echo "Aborted" ; return  1 ;;
+        esac
+    done
+}
+
+yes_or_no && rsync -av ~/Desktop/ /Volumes/One\ Touch/FooWeiGuo-iMac/Desktop/ && rsync -av ~/Pictures/ /Volumes/One\ Touch/FooWeiGuo-iMac/Pictures/ && rsync -av ~/Documents/ /Volumes/One\ Touch/FooWeiGuo-iMac/Documents/ && rsync -av ~/Downloads/ /Volumes/One\ Touch/FooWeiGuo-iMac/Downloads/

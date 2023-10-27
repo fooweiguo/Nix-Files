@@ -1,0 +1,27 @@
+# /bin/bash
+echo "ANY MESSAGE"
+
+function yes_or_no {
+    while true; do
+        read -p "$* [y/n]: " yn
+        case $yn in
+            [Yy]*) return 0  ;;  
+            [Nn]*) echo "Aborted" ; return  1 ;;
+        esac
+    done
+}
+
+function echo_seq {
+ echo "Hello world 1"
+ echo "Hello world 2"
+ echo "Hello world 3"
+ echo "Continue?"
+}
+
+function echo_seq1 {
+ echo "Funny 1"
+ echo "Funny 2"
+ echo "Funny 3"
+}
+
+yes_or_no && echo_seq && yes_or_no && echo_seq1 

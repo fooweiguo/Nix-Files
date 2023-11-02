@@ -1,4 +1,5 @@
 #!/bin/bash
-remind -p12 .reminder 2023/01/01 | rem2ps > calendar.ps
+read -p "Which Year: " YEAR
+remind -p12 .reminder $YEAR/01/01 | rem2ps > calendar.ps
 ps2pdf calendar.ps
 rm calendar.ps

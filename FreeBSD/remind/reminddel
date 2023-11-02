@@ -1,0 +1,29 @@
+#!/bin/bash
+
+touch ~/.remindtest 
+read -p "Input key words: " KEYWORDS
+cp -fr ~/.reminders ~/.reminders.bak
+
+grep -q -i  "$KEYWORDS" ~/.reminders
+
+if [[ $? -ne 0 ]] || [[ -z "$KEYWORDS" ]]; then 
+	echo "No match!"
+else 
+	cat -n ~/.reminders | grep -i "$KEYWORDS"
+	read -p "Which entry do you want to remove (enter the corresponding number): " LINENUMBER
+	sed "${LINENUMBER}d" ~/.reminders > ~/.remindtest 
+	remind -w140 -c+2 ~/.remindtest > ~/tmp/remindtest
+	cat ~/tmp/remindtest
+	echo "Does this look okay to you? (WARNING: This action will not be recoverable!) : " 
+	PS3="Select a number: "
+	select yn in "Yes" "No" 
+	do	
+		case "$yn" in
+    				"Yes" )  
+			    	sed -i '' "${LINENUMBER}d" ~/.reminders ; break ;;
+        			"No" )   
+			  	echo "Aborted!" ; break ;;
+    		esac
+	done
+fi
+rm ~/.remindtest

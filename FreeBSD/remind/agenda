@@ -1,0 +1,19 @@
+#!/bin/bash
+if [ -z $1 ]
+	then echo "Append the following options to agenda command: show, add, delete, calendar2pdf, sgholidays (get, show, next)"
+elif [ $1 = "show" ]
+	then remind -w140 -c+4 $HOME/.reminders > ~/tmp/remind_calender
+	cat ~/tmp/remind_calender
+elif [ $1 = "add" ]
+	then sh $HOME/opt/personal/remind/remindadd
+elif [ $1 = "delete" ] 
+	then sh $HOME/opt/personal/remind/reminddel
+elif [ $1 = "calendar2pdf" ]
+	then sh $HOME/opt/personal/remind/calendar2pdf
+elif [ $1 = "sgholidays" ] && [ $2 = "get" ]
+	then sh $HOME/opt/personal/remind/sgholidays-get; sh $HOME/opt/personal/remind/sgholidays-next
+elif [ $1 = "sgholidays" ] && [ $2 = "show" ]
+	then sh $HOME/opt/personal/remind/sgholidays-show; sh $HOME/opt/personal/remind/sgholidays-next
+elif [ $1 = "sgholidays" ] && [ $2 = "next" ]
+	then sh $HOME/opt/personal/remind/sgholidays-next 
+fi

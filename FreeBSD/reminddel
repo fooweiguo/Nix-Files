@@ -2,22 +2,29 @@
 
 touch ~/.remindtest 
 read -p "Input key words: " KEYWORDS
-cp -fr ~/.reminder ~/.reminder.bak
+cp -fr ~/.reminders ~/.reminders.bak
 
-grep -q -i "$KEYWORDS" ~/.reminder
+function yes_or_no {
+    while true; do
+        read -p "$* [y/n]: " yn
+        case $yn in
+            [Yy]*) return 0  ;;  
+            [Nn]*) echo "Aborted" ; return  1 ;;
+  	    * ) echo "Please answer Yes or No. " ;;
+        esac
+    done
+}
 
-if [[ $? -ne 0 ]] 
+grep -q -i "$KEYWORDS" ~/.reminders
+
+if [[ $? -ne 0 ]] || [ -z "$KEYWORDS" ] 
 then
 	echo "No match!"
 else
-	cat -n ~/.reminder | grep -i "$KEYWORDS"
+	cat -n ~/.reminders | grep -i "$KEYWORDS"
 	read -p "Which entry do you want to remove (enter the corresponding number): " LINENUMBER
-	sed "${LINENUMBER}d" ~/.reminder > ~/.remindtest | remind -c+2 ~/.remindtest
-	read -p "Does this look okay to you? (WARNING: This action will not be recoverable!)" yn
-		case $yn in 
-			[Yy]* ) sed -i '' "${LINENUMBER}d" ~/.reminder; break;;
-			[Nn]* ) exit;;
-			* ) echo "Please answer Yes or No." ;;
-		esac
+	sed "${LINENUMBER}d" ~/.reminders > ~/.remindtest | remind -w140 -c+2 ~/.remindtest
+        echo "Does this look okay to you? (WARNING: This action will not be recoverable!) [y/n]: "
+	yes_or_no && sed -i '' "${LINENUMBER}d" ~/.reminders;
 fi
 rm ~/.remindtest

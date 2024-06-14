@@ -1,0 +1,31 @@
+#!/usr/bin/bash
+
+PATHX="/home/fooweiguo/tmp/"
+
+WEBSITES=("math.CV?https://arxiv.org/list/math.CV/recent" "math.DG?https://arxiv.org/list/math.DG/recent")
+
+
+if [ "$1" = "fingerprint" ]; then
+        for values in "${WEBSITES[@]}"; do
+                WEBALIAS=$(echo $values | awk -F '?' '{print $1}')
+                WEBPAGE=$(echo $values | awk -F '?' '{print $2}')
+                echo "Getting Fingerprints for $WEBALIAS"
+                curl --silent $WEBPAGE | md5sum > $PATHX/$WEBALIAS.md5old
+        done
+elif [ "$1" = "update" ]; then
+        echo "Checking if anything has changed..."
+        for values in "${WEBSITES[@]}"; do
+                WEBALIAS=$(echo $values | awk -F '?' '{print $1}')
+                WEBPAGE=$(echo $values | awk -F '?' '{print $2}')
+                curl --silent $WEBPAGE | md5sum > $PATHX/$WEBALIAS.md5new
+        if ! cmp $PATHX/$WEBALIAS.md5old $PATHX/$WEBALIAS.md5new > /dev/null; then
+                printf "%s has changed from baseline!\n" "$WEBPAGE"
+                echo "Updating fingerprints"
+                curl --silent $WEBPAGE | md5sum > $PATHX/$WEBALIAS.md5old
+        else
+                printf "Nothing has changed for $WEBALIAS !\n"
+        fi
+        done
+else
+        printf "fingerprint, update \n"
+fi

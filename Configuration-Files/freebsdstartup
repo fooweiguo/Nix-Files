@@ -1,1 +1,6 @@
 #!/bin/sh
+pkg install doas vim xorg mate lightdm lightdm-gtk-greeter
+cp /etc/fstab /etc/fstab.bak
+echo -e 'proc\t\t/proc\tprocfs\trw\t0\t0' >> /etc/fstab
+sysrc dbus_enable="YES"
+sysrc lightdm_enable="YES"
